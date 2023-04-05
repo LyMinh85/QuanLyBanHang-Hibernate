@@ -1,6 +1,6 @@
-package Bus;
+package BUS;
 
-import Dao.OrderDao;
+import DAO.OrderDAO;
 import Entities.Order;
 
 import java.time.LocalDate;
@@ -10,10 +10,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RevenueStatisticsBus {
-    private OrderDao orderDao;
-    public RevenueStatisticsBus() {
-        orderDao = new OrderDao();
+public class RevenueStatisticsBUS {
+    private OrderDAO orderDao;
+    public RevenueStatisticsBUS() {
+        orderDao = new OrderDAO();
     }
     public List<RevenueDataPoint> getDailyRevenue(LocalDate startDate, LocalDate endDate) {
         List<Order> orders = orderDao.getOrdersByDateRange(startDate, endDate);

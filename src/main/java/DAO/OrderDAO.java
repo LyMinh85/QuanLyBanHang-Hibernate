@@ -1,7 +1,5 @@
-package Dao;
+package DAO;
 
-import Bus.RevenueDataPoint;
-import Bus.RevenueStatisticsBus;
 import Entities.Order;
 import Entities.Vegetable;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -13,7 +11,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderDao {
+public class OrderDAO {
     public List<Order> getOrdersByDateRange(LocalDate startDate, LocalDate endDate) {
         List<Order> orders = new ArrayList<>();
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -58,7 +56,7 @@ public class OrderDao {
 //            System.out.println(dataPoint);
 //        }
 
-        OrderDao orderDao = new OrderDao();
+        OrderDAO orderDao = new OrderDAO();
         List<Order> orders = orderDao.getOrders();
         for (Order order : orders) {
             List<Vegetable> vegetables = order.getVegetables();

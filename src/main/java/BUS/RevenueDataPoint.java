@@ -1,6 +1,4 @@
-package Bus;
-
-import java.util.Date;
+package BUS;
 
 public class RevenueDataPoint {
     private String label;
