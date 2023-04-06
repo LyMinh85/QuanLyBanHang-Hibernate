@@ -21,6 +21,7 @@
         <mapping class="Entities.Order" />
         <mapping class="Entities.Vegetable" />
         <mapping class="Entities.Customer" />
+        <mapping class="Entities.OrderDetail" />
 
     </session-factory>
 </hibernate-configuration>

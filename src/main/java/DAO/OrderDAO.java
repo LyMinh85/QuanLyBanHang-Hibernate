@@ -1,7 +1,8 @@
 package DAO;
 
-import Entities.Order;
-import Entities.Vegetable;
+import Entities.*;
+import jakarta.persistence.PersistenceException;
+import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -47,6 +48,22 @@ public class OrderDAO {
         return orders;
     }
 
+    public boolean addOrder(Order order) {
+        boolean addSuccess = true;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            session.beginTransaction();
+            try {
+                session.persist(order);
+            } catch (PersistenceException e) {
+                e.printStackTrace();
+                addSuccess = false;
+            } finally {
+                session.getTransaction().commit();
+            }
+        }
+        return addSuccess;
+    }
+
     public static void main(String[] args) {
 //        LocalDate startDate = LocalDate.parse("2023-02-04");
 //        LocalDate endDate = LocalDate.parse("2023-04-04");
@@ -56,16 +73,27 @@ public class OrderDAO {
 //            System.out.println(dataPoint);
 //        }
 
-        OrderDAO orderDao = new OrderDAO();
-        List<Order> orders = orderDao.getOrders();
-        for (Order order : orders) {
-            List<Vegetable> vegetables = order.getVegetables();
-            System.out.printf("Order id: %d\n", order.getOrderID());
-            for (Vegetable vegetable : vegetables) {
-                System.out.printf("Vegetable id: %d\n", vegetable.getVegetableID());
-                System.out.printf("Vegetable name: %s\n", vegetable.getVegetableName());
-            }
-            System.out.println("-".repeat(10));
-        }
+//        OrderDAO orderDao = new OrderDAO();
+//        List<Order> orders = orderDao.getOrders();
+//        for (Order order : orders) {
+//            List<Vegetable> vegetables = order.getVegetables();
+//            System.out.printf("Order id: %d\n", order.getOrderID());
+//            for (Vegetable vegetable : vegetables) {
+//                System.out.printf("Vegetable id: %d\n", vegetable.getVegetableID());
+//                System.out.printf("Vegetable name: %s\n", vegetable.getVegetableName());
+//            }
+//            System.out.println("-".repeat(10));
+//        }
+
+//        List<Category> categories = new ArrayList<>();
+//        Category category = new Category();
+//        category.setCategoryID(2323);
+//        category.setName("asdasdas");
+//        categories.add(category);
+//        System.out.println(categories);
+//
+//        for (Category c : categories) {
+//
+//        }
     }
 }
