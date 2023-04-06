@@ -13,7 +13,7 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int categoryID;
     @Column
-    private String nane;
+    private String name;
     @Column
     private String description;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
