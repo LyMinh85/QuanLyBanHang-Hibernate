@@ -17,7 +17,7 @@ public class Vegetable {
     @JoinColumn(name = "categoryID", nullable = false)
     private Category category;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vegetable")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vegetable", cascade = CascadeType.MERGE)
     private List<OrderDetail> orderDetails;
 
     @Column
@@ -34,4 +34,27 @@ public class Vegetable {
 
     @Column
     private float price;
+
+    public Vegetable() {}
+
+    public Vegetable(String vegetableName, String unit, int amount, String image, float price) {
+        this.vegetableName = vegetableName;
+        this.unit = unit;
+        this.amount = amount;
+        this.image = image;
+        this.price = price;
+    }
+
+    @Override
+    public String toString() {
+        return "Vegetable{" +
+                "vegetableID=" + vegetableID +
+                ", category=" + category +
+                ", vegetableName='" + vegetableName + '\'' +
+                ", unit='" + unit + '\'' +
+                ", amount=" + amount +
+                ", image='" + image + '\'' +
+                ", price=" + price +
+                '}';
+    }
 }

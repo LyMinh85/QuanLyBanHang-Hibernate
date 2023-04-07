@@ -18,4 +18,13 @@ public class Category {
     private String description;
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private List<Vegetable> vegetables;
+
+    @Override
+    public String toString() {
+        return "Category{" +
+                "categoryID=" + categoryID +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

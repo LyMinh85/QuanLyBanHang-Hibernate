@@ -4,9 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 @Entity
@@ -20,7 +18,7 @@ public class Order {
     @JoinColumn(name = "customerID", nullable = false)
     private Customer customer;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.MERGE)
     private List<OrderDetail> orderDetails;
 
     @Column

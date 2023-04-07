@@ -9,7 +9,7 @@ import lombok.Data;
 public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int OrderDetailID;
+    private int orderDetailID;
 
     @ManyToOne
     @JoinColumn(name = "orderID", nullable = false)

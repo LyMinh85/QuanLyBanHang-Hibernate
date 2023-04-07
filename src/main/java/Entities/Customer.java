@@ -23,4 +23,14 @@ public class Customer {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
     private List<Order> orders;
 
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "customerID=" + customerID +
+                ", fullname='" + fullname + '\'' +
+                ", password='" + password + '\'' +
+                ", address='" + address + '\'' +
+                ", city='" + city + '\'' +
+                '}';
+    }
 }
