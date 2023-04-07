@@ -42,7 +42,6 @@ public class OrderDAO {
         }
         return orders;
     }
-
     public boolean addOrder(Order order) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -55,7 +54,7 @@ public class OrderDAO {
         return true;
     }
 
-    public int addOrderDetail(List<OrderDetail> orderDetails) {
+    public boolean addOrderDetail(List<OrderDetail> orderDetails) {
         int insertedRows = 0;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
@@ -67,11 +66,12 @@ public class OrderDAO {
                     session.clear();
                 }
             }
+            insertedRows = orderDetails.size();
             transaction.commit();
         } catch (PersistenceException e) {
             e.printStackTrace();
         }
-        return insertedRows;
+        return insertedRows == orderDetails.size();
     }
 
     public boolean updateOrder(Order order) {

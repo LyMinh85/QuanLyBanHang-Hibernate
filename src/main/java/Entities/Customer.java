@@ -20,7 +20,7 @@ public class Customer {
     private String address;
     @Column
     private String city;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Order> orders;
 
     @Override

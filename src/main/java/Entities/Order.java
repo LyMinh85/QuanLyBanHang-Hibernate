@@ -18,7 +18,7 @@ public class Order {
     @JoinColumn(name = "customerID", nullable = false)
     private Customer customer;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderDetail> orderDetails;
 
     @Column

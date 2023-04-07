@@ -17,7 +17,7 @@ public class Vegetable {
     @JoinColumn(name = "categoryID", nullable = false)
     private Category category;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vegetable", cascade = CascadeType.MERGE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "vegetable", cascade = CascadeType.ALL)
     private List<OrderDetail> orderDetails;
 
     @Column
@@ -57,4 +57,5 @@ public class Vegetable {
                 ", price=" + price +
                 '}';
     }
+
 }
