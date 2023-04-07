@@ -2,21 +2,20 @@ package DAO;
 
 import Entities.*;
 import jakarta.persistence.PersistenceException;
-import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDAO {
-    public List<Order> getOrdersByDateRange(LocalDate startDate, LocalDate endDate) {
-        List<Order> orders = new ArrayList<>();
+    public List<Order> getOrdersInRange(LocalDate startDate, LocalDate endDate) {
+        List<Order> orders;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.beginTransaction();
             // Sử dụng QueryBuilder
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Order> cr = cb.createQuery(Order.class);
@@ -25,7 +24,6 @@ public class OrderDAO {
                     .where(cb.between(root.get("date"), startDate, endDate))
                     .orderBy(cb.asc(root.get("date")));
             orders = session.createQuery(cr).getResultList();
-            session.getTransaction().commit();
         }
         return orders;
     }
@@ -33,36 +31,79 @@ public class OrderDAO {
     public List<Order> getOrders() {
         List<Order> orders = new ArrayList<>();
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.beginTransaction();
-            // Sử dụng QueryBuilder
             CriteriaBuilder cb = session.getCriteriaBuilder();
             CriteriaQuery<Order> cr = cb.createQuery(Order.class);
             Root<Order> root = cr.from(Order.class);
-            // Nếu muốn sử dụng getVegetables() thì phải fetch
-            // Vì quan hệ giữa Order với Vegetable là fetch LAZY
-            root.fetch("vegetables");
+            root.fetch("orderDetails");
             cr.select(root);
             orders = session.createQuery(cr).getResultList();
-            session.getTransaction().commit();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
         }
         return orders;
     }
 
     public boolean addOrder(Order order) {
-        boolean addSuccess = true;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            session.beginTransaction();
-            try {
-                session.persist(order);
-            } catch (PersistenceException e) {
-                e.printStackTrace();
-                addSuccess = false;
-            } finally {
-                session.getTransaction().commit();
-            }
+            Transaction transaction = session.beginTransaction();
+            session.persist(order);
+            transaction.commit();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            return false;
         }
-        return addSuccess;
+        return true;
     }
+
+    public int addOrderDetail(List<OrderDetail> orderDetails) {
+        int insertedRows = 0;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            for (int i = 0; i < orderDetails.size(); i++) {
+                session.persist(orderDetails.get(i));
+                if (i % 20 == 0) {
+                    insertedRows = i + 1;
+                    session.flush();
+                    session.clear();
+                }
+            }
+            transaction.commit();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+        }
+        return insertedRows;
+    }
+
+    public boolean updateOrder(Order order) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.merge(order);
+            transaction.commit();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean deleteOrder(int orderID) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = session.beginTransaction();
+            Order order = session.get(Order.class, orderID);
+            if (order != null) {
+                order.getOrderDetails().forEach(session::remove);
+                session.remove(order);
+                transaction.commit();
+            } else {
+                return false;
+            }
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
 
     public static void main(String[] args) {
 //        LocalDate startDate = LocalDate.parse("2023-02-04");
@@ -73,17 +114,16 @@ public class OrderDAO {
 //            System.out.println(dataPoint);
 //        }
 
-//        OrderDAO orderDao = new OrderDAO();
-//        List<Order> orders = orderDao.getOrders();
-//        for (Order order : orders) {
-//            List<Vegetable> vegetables = order.getVegetables();
-//            System.out.printf("Order id: %d\n", order.getOrderID());
-//            for (Vegetable vegetable : vegetables) {
-//                System.out.printf("Vegetable id: %d\n", vegetable.getVegetableID());
-//                System.out.printf("Vegetable name: %s\n", vegetable.getVegetableName());
-//            }
-//            System.out.println("-".repeat(10));
-//        }
+        OrderDAO orderDao = new OrderDAO();
+        List<Order> orders = orderDao.getOrders();
+        System.out.printf("%20s|%20s|%20s|%20s|\n", "OrderID", "OrderDetailID", "Quantity", "VegetableName");
+        for (Order order : orders) {
+            for (OrderDetail orderDetail : order.getOrderDetails()) {
+                System.out.printf("%20s|%20s|%20s|%20s|\n",
+                        order.getOrderID(), orderDetail.getOrderDetailID(),
+                        orderDetail.getQuantity() , orderDetail.getVegetable().getVegetableName());
+            }
+        }
 
 //        List<Category> categories = new ArrayList<>();
 //        Category category = new Category();

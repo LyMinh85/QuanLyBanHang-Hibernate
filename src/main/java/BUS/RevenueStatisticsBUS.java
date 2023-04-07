@@ -16,17 +16,17 @@ public class RevenueStatisticsBUS {
         orderDao = new OrderDAO();
     }
     public List<RevenueDataPoint> getDailyRevenue(LocalDate startDate, LocalDate endDate) {
-        List<Order> orders = orderDao.getOrdersByDateRange(startDate, endDate);
+        List<Order> orders = orderDao.getOrdersInRange(startDate, endDate);
         return getRevenueByTimeUnit(orders, "Days");
     }
 
     public List<RevenueDataPoint> getMonthlyRevenue(LocalDate startDate, LocalDate endDate) {
-        List<Order> orders = orderDao.getOrdersByDateRange(startDate, endDate);
+        List<Order> orders = orderDao.getOrdersInRange(startDate, endDate);
         return getRevenueByTimeUnit(orders, "Months");
     }
 
     public List<RevenueDataPoint> getYearlyRevenue(LocalDate startDate, LocalDate endDate) {
-        List<Order> orders = orderDao.getOrdersByDateRange(startDate, endDate);
+        List<Order> orders = orderDao.getOrdersInRange(startDate, endDate);
         return getRevenueByTimeUnit(orders, "Years");
     }
 
