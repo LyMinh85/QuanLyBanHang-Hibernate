@@ -42,12 +42,15 @@ public class MainConsole {
                 case "2" -> {
                     OrderBUS orderBUS = new OrderBUS();
                     List<Order> orders = orderBUS.getOrders();
-                    System.out.printf("%20s|%20s|%20s|%20s|\n", "OrderID", "OrderDetailID", "Quantity", "VegetableName");
+                    System.out.printf("%20s|%20s|%20s|%20s|%20s|%20s|%20s|\n",
+                            "OrderID", "Note", "Total", "OrderDetailID",
+                            "Quantity", "VegetableName", "Price");
                     for (Order order : orders) {
                         for (OrderDetail orderDetail : order.getOrderDetails()) {
-                            System.out.printf("%20s|%20s|%20s|%20s|\n",
-                                    order.getOrderID(), orderDetail.getOrderDetailID(),
-                                    orderDetail.getQuantity(), orderDetail.getVegetable().getVegetableName());
+                            System.out.printf("%20s|%20s|%20s|%20s|%20s|%20s|%20s|\n",
+                                    order.getOrderID(), order.getNote(), order.getTotal(),
+                                    orderDetail.getOrderDetailID(), orderDetail.getQuantity(),
+                                    orderDetail.getVegetable().getVegetableName(), orderDetail.getPrice());
                         }
                     }
                     yield false;
@@ -56,7 +59,7 @@ public class MainConsole {
                 case "3" -> {
                     /* ------- Cách lập 1 hóa đơn -------- */
                     OrderBUS orderBUS = new OrderBUS();
-                    Order order = new Order(LocalDate.now(), 0.0f, "Thử chút");
+                    Order order = new Order(LocalDate.of(2023, 4, 3), 0.0f, "Thử chút");
                     if (orderBUS.addOrder(order, 8)) {
                         System.out.println("Success");
                     }
@@ -80,6 +83,14 @@ public class MainConsole {
                     if (orderBUS.addOrderDetail(orderDetails)) {
                         System.out.println("Success");
                     }
+
+                    /* Update lại total trong order */
+                    float total = 0.0f;
+                    for (OrderDetail orderDetail : orderDetails) {
+                        total += orderDetail.getQuantity() * orderDetail.getPrice();
+                    }
+                    order.setTotal(total);
+                    orderBUS.updateOrder(order);
                     /* ------- Cách lập 1 hóa đơn -------- */
                     yield false;
 
