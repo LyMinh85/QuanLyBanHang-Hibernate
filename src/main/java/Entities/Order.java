@@ -30,4 +30,12 @@ public class Order {
     @Column
     private String note;
 
+    public Order() {}
+
+    public Order(LocalDate date, float total, String note) {
+        this.orderDetails = orderDetails;
+        this.date = date;
+        this.total = total;
+        this.note = note;
+    }
 }

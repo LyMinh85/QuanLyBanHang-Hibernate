@@ -1,5 +1,9 @@
 package DAO;
 
+import BUS.OrderBUS;
+import BUS.RevenueDataPoint;
+import BUS.RevenueStatisticsBUS;
+import BUS.VegetableBUS;
 import Entities.*;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -8,9 +12,12 @@ import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class OrderDAO {
     public List<Order> getOrdersInRange(LocalDate startDate, LocalDate endDate) {
@@ -42,9 +49,11 @@ public class OrderDAO {
         }
         return orders;
     }
-    public boolean addOrder(Order order) {
+    public boolean addOrder(Order order, int customerID) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction transaction = session.beginTransaction();
+            Customer customer = session.find(Customer.class, customerID);
+            order.setCustomer(customer);
             session.persist(order);
             transaction.commit();
         } catch (PersistenceException e) {
@@ -104,36 +113,4 @@ public class OrderDAO {
         return true;
     }
 
-
-    public static void main(String[] args) {
-//        LocalDate startDate = LocalDate.parse("2023-02-04");
-//        LocalDate endDate = LocalDate.parse("2023-04-04");
-//        RevenueStatisticsBus revenueStatisticsBus = new RevenueStatisticsBus();
-//        List<RevenueDataPoint> revenueDate = revenueStatisticsBus.getDailyRevenue(startDate, endDate);
-//        for (RevenueDataPoint dataPoint : revenueDate) {
-//            System.out.println(dataPoint);
-//        }
-
-        OrderDAO orderDao = new OrderDAO();
-        List<Order> orders = orderDao.getOrders();
-        System.out.printf("%20s|%20s|%20s|%20s|\n", "OrderID", "OrderDetailID", "Quantity", "VegetableName");
-        for (Order order : orders) {
-            for (OrderDetail orderDetail : order.getOrderDetails()) {
-                System.out.printf("%20s|%20s|%20s|%20s|\n",
-                        order.getOrderID(), orderDetail.getOrderDetailID(),
-                        orderDetail.getQuantity() , orderDetail.getVegetable().getVegetableName());
-            }
-        }
-
-//        List<Category> categories = new ArrayList<>();
-//        Category category = new Category();
-//        category.setCategoryID(2323);
-//        category.setName("asdasdas");
-//        categories.add(category);
-//        System.out.println(categories);
-//
-//        for (Category c : categories) {
-//
-//        }
-    }
 }

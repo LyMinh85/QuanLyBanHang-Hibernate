@@ -84,6 +84,15 @@ public class VegetableDAO {
         return vegetables;
     }
 
+    public Vegetable getById(int vegetableID) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.find(Vegetable.class, vegetableID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
         VegetableBUS vegetableBUS = new VegetableBUS();
 

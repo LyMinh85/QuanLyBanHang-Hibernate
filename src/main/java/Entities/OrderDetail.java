@@ -24,4 +24,13 @@ public class OrderDetail {
 
     @Column
     private float price;
+
+    public OrderDetail() {}
+
+    public OrderDetail(Order order, Vegetable vegetable, int quantity, float price) {
+        this.order = order;
+        this.vegetable = vegetable;
+        this.quantity = quantity;
+        this.price = price;
+    }
 }

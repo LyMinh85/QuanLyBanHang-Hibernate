@@ -30,4 +30,8 @@ public class VegetableBUS {
     public List<Vegetable> searchVegetableByName(String name) {
         return vegetableDAO.searchVegetableByName(name);
     }
+
+    public Vegetable getById(int vegetableID) {
+        return vegetableDAO.getById(vegetableID);
+    }
 }
