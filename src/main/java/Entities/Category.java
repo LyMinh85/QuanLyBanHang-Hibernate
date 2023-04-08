@@ -19,6 +19,13 @@ public class Category {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     private List<Vegetable> vegetables;
 
+    public Category() {}
+
+    public Category(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "Category{" +
