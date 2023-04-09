@@ -15,7 +15,7 @@
         <!-- Enable Hibernates automatic session context management -->
         <property name="current_session_context_class">thread</property>
         <!-- Show all executed SQL to console -->
-        <property name="show_sql">false</property>
+        <property name="show_sql">true</property>
         <!-- Entity mapping -->
         <mapping class="Entities.Category" />
         <mapping class="Entities.Order" />

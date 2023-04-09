@@ -14,7 +14,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int orderID;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customerID", nullable = false)
     private Customer customer;
 
@@ -33,7 +33,6 @@ public class Order {
     public Order() {}
 
     public Order(LocalDate date, float total, String note) {
-        this.orderDetails = orderDetails;
         this.date = date;
         this.total = total;
         this.note = note;

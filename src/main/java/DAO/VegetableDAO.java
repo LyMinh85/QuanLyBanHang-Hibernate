@@ -8,6 +8,7 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,12 +17,11 @@ public class VegetableDAO {
     public List<Vegetable> getVegetables() {
         List<Vegetable> vegetables = new ArrayList<>();
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            CriteriaBuilder cb = session.getCriteriaBuilder();
-            CriteriaQuery<Vegetable> cr = cb.createQuery(Vegetable.class);
-            Root<Vegetable> root = cr.from(Vegetable.class);
-            root.fetch("category");
-            cr.select(root).orderBy(cb.asc(root.get("vegetableID")));
-            vegetables = session.createQuery(cr).getResultList();
+            String hql = """
+                    SELECT DISTINCT v FROM Vegetable v
+                    INNER JOIN FETCH v.category c
+                    """;
+            vegetables = session.createQuery(hql, Vegetable.class).getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -72,12 +72,14 @@ public class VegetableDAO {
     public List<Vegetable> searchVegetableByName(String name) {
         List<Vegetable> vegetables = new ArrayList<>();
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            CriteriaBuilder cb = session.getCriteriaBuilder();
-            CriteriaQuery<Vegetable> cr = cb.createQuery(Vegetable.class);
-            Root<Vegetable> root = cr.from(Vegetable.class);
-            root.fetch("category");
-            cr.select(root).where(cb.like(root.get("vegetableName"), "%" + name  + "%"));
-            vegetables = session.createQuery(cr).getResultList();
+            String hql = """
+                    SELECT DISTINCT v FROM Vegetable v
+                    INNER JOIN FETCH v.category c
+                    WHERE v.vegetableName LIKE :vegetableName
+                    """;
+            Query<Vegetable> query = session.createQuery(hql, Vegetable.class);
+            query.setParameter("vegetableName", "%" + name + "%");
+            vegetables = query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
