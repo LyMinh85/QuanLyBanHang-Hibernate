@@ -8,8 +8,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class OrderBUS {
-    private OrderDAO orderDAO;
-    public  OrderBUS() {
+    private final OrderDAO orderDAO;
+
+    public OrderBUS() {
         orderDAO = new OrderDAO();
     }
 
@@ -17,9 +18,6 @@ public class OrderBUS {
         return orderDAO.getOrders();
     }
 
-    // Tham số là order phải bao gồm orderDeatil trong đó
-    // Tạo 1 hóa đơn mới trước xong
-    // thêm từng sản phẩm vào hóa đơn đó
     public boolean addOrder(Order order, int customerID) {
         return orderDAO.addOrder(order, customerID);
     }
@@ -38,5 +36,9 @@ public class OrderBUS {
 
     public List<Order> getOrdersInRange(LocalDate startDate, LocalDate endDate) {
         return orderDAO.getOrdersInRange(startDate, endDate);
+    }
+
+    public List<Order> getByCustomerName(String name) {
+        return orderDAO.getByCustomerName(name);
     }
 }

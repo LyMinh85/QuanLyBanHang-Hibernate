@@ -23,6 +23,8 @@ public class MainConsole {
             System.out.println("2. Hiển thị tất cả hóa đơn");
             System.out.println("3. Thêm hóa đơn");
             System.out.println("4. Xóa hóa đơn");
+            System.out.println("5. Tìm kiếm theo tên khách hàng");
+            System.out.println("exit. Thoát chương trình");
             System.out.print("Nhập lựa chọn: ");
             String choose = scanner.nextLine();
             boolean isExit = switch (choose.toUpperCase()) {
@@ -43,12 +45,12 @@ public class MainConsole {
                     OrderBUS orderBUS = new OrderBUS();
                     List<Order> orders = orderBUS.getOrders();
                     System.out.printf("%20s|%20s|%20s|%20s|%20s|%20s|%20s|\n",
-                            "OrderID", "Note", "Total", "OrderDetailID",
+                            "OrderID", "CustomerName", "Total", "OrderDetailID",
                             "Quantity", "VegetableName", "Price");
                     for (Order order : orders) {
                         for (OrderDetail orderDetail : order.getOrderDetails()) {
                             System.out.printf("%20s|%20s|%20s|%20s|%20s|%20s|%20s|\n",
-                                    order.getOrderID(), order.getNote(), order.getTotal(),
+                                    order.getOrderID(), order.getCustomer().getFullname(), order.getTotal(),
                                     orderDetail.getOrderDetailID(), orderDetail.getQuantity(),
                                     orderDetail.getVegetable().getVegetableName(), orderDetail.getPrice());
                         }
@@ -107,6 +109,24 @@ public class MainConsole {
                         }
                     } catch (NumberFormatException e) {
                         System.out.println("Sai du lieu");
+                    }
+                    yield false;
+                }
+                case "5" -> {
+                    System.out.println("Nhập customer name cần tìm: ");
+                    String name = scanner.nextLine();
+                    OrderBUS orderBUS = new OrderBUS();
+                    List<Order> orders = orderBUS.getByCustomerName(name);
+                    System.out.printf("%20s|%20s|%20s|%20s|%20s|%20s|%20s|\n",
+                            "OrderID", "CustomerName", "Total", "OrderDetailID",
+                            "Quantity", "VegetableName", "Price");
+                    for (Order order : orders) {
+                        for (OrderDetail orderDetail : order.getOrderDetails()) {
+                            System.out.printf("%20s|%20s|%20s|%20s|%20s|%20s|%20s|\n",
+                                    order.getOrderID(), order.getCustomer().getFullname(), order.getTotal(),
+                                    orderDetail.getOrderDetailID(), orderDetail.getQuantity(),
+                                    orderDetail.getVegetable().getVegetableName(), orderDetail.getPrice());
+                        }
                     }
                     yield false;
                 }

@@ -109,4 +109,23 @@ public class OrderDAO {
         return true;
     }
 
+    public List<Order> getByCustomerName(String name) {
+        List<Order> orders = new ArrayList<>();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = """
+                    SELECT DISTINCT o FROM Order o
+                    INNER JOIN FETCH o.orderDetails od
+                    INNER JOIN FETCH od.vegetable v
+                    INNER JOIN FETCH o.customer
+                    WHERE o.customer.fullname LIKE :name
+                    """;
+            Query<Order> query = session.createQuery(hql, Order.class);
+            query.setParameter("name", "%" + name + "%");
+            orders = query.getResultList();
+        } catch (PersistenceException e) {
+            e.printStackTrace();
+        }
+        return orders;
+    }
+
 }
