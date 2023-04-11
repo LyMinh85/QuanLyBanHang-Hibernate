@@ -1,22 +1,21 @@
 package GUI;
 
-import BUS.OrderBUS;
-import BUS.RevenueDataPoint;
-import BUS.RevenueStatisticsBUS;
-import BUS.VegetableBUS;
+import BUS.*;
+import Entities.Customer;
 import Entities.Order;
 import Entities.OrderDetail;
 import Entities.Vegetable;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
 public class MainConsole {
-    public static void main(String[] args) {
+    public static void runOrderManagement() {
         Scanner scanner = new Scanner(System.in);
         do {
             System.out.println("1. Thống kê theo các ngày của tuần này");
@@ -30,7 +29,7 @@ public class MainConsole {
             boolean isExit = switch (choose.toUpperCase()) {
                 case "1" -> {
                     // Thống kê doanh thu theo các ngày của tuần này
-                    LocalDate startDate = LocalDate.now().with(DayOfWeek.MONDAY);
+                    LocalDate startDate = LocalDate.now().with(DayOfWeek.MONDAY).minusWeeks(1);
                     LocalDate endDate = startDate.plusWeeks(1).minusDays(1);
                     System.out.println(startDate);
                     System.out.println(endDate);
@@ -61,15 +60,18 @@ public class MainConsole {
                 case "3" -> {
                     /* ------- Cách lập 1 hóa đơn -------- */
                     OrderBUS orderBUS = new OrderBUS();
-                    Order order = new Order(LocalDate.of(2023, 4, 3), 0.0f, "Thử chút");
+                    String dateString = scanner.nextLine();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                    LocalDate date = LocalDate.parse(dateString, formatter);
+                    Order order = new Order(date, 0.0f, "Thử chút");
                     if (orderBUS.addOrder(order, 8)) {
                         System.out.println("Success");
                     }
                     VegetableBUS vegetableBUS = new VegetableBUS();
 
                     /* Tạo các chi tiết hóa đơn từ hóa đơn vừa thêm trên
-                    *  Minh họa nên dùng giá trị random
-                    *  */
+                     *  Minh họa nên dùng giá trị random
+                     *  */
                     List<OrderDetail> orderDetails = new ArrayList<>();
                     Random rand = new Random();
                     // rand.nextInt(1, 3) -> random from 1 - 3
@@ -140,6 +142,73 @@ public class MainConsole {
                 break;
             }
         } while (true);
+    }
 
+    public static void runCustomerConsole() {
+        CustomerBUS customerBUS = new CustomerBUS();
+        Scanner scanner = new Scanner(System.in);
+        boolean isExit = false;
+        do {
+            System.out.println("1. Hiển thị tất cả khách hàng");
+            System.out.println("2. Thêm customer");
+            System.out.println("3. Xóa customer");
+            System.out.println("4. Tìm kiếm theo tên customer");
+            System.out.println("exit. Thoát chương trình");
+            System.out.print("Nhập lựa chọn: ");
+            String choose = scanner.nextLine();
+            switch (choose.toUpperCase()) {
+                case "1" -> {
+                    List<Customer> customers = customerBUS.getCustomers();
+                    System.out.printf("%20s|%20s|%20s|%20s|%20s|\n",
+                            "CustomerID", "CustomerName", "Password",
+                            "Address", "City");
+                    for (Customer c : customers) {
+                        System.out.printf("%20s|%20s|%20s|%20s|%20s|\n",
+                                c.getCustomerID(), c.getFullname(), c.getPassword(),
+                                c.getAddress(), c.getAddress());
+                    }
+                }
+                case "2" -> {
+                    Customer customer = new Customer("David", "2222", "Hello", "World");
+                    customerBUS.addCustomer(customer);
+                }
+                case "3" -> {
+                    try {
+                        System.out.println("Nhập customerID cần xóa: ");
+                        int customerID = Integer.parseInt(scanner.nextLine());
+                        if (customerBUS.deleteCustomer(customerID)) {
+                            System.out.println("Successful");
+                        } else {
+                            System.out.println("Failed");
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Sai du lieu");
+                    }
+                }
+                case "4" -> {
+                    System.out.println("Nhập customer name cần tìm: ");
+                    String name = scanner.nextLine();
+                    List<Customer> customers = customerBUS.searchCustomerByName(name);
+                    System.out.printf("%20s|%20s|%20s|%20s|%20s|\n",
+                            "CustomerID", "CustomerName", "Password",
+                            "Address", "City");
+                    for (Customer c : customers) {
+                        System.out.printf("%20s|%20s|%20s|%20s|%20s|\n",
+                                c.getCustomerID(), c.getFullname(), c.getPassword(),
+                                c.getAddress(), c.getAddress());
+                    }
+                }
+                case "EXIT" -> isExit = true;
+                default -> System.out.println("Wrong option");
+            };
+            if (isExit) {
+                break;
+            }
+        } while (!isExit);
+    }
+
+    public static void main(String[] args) {
+        runOrderManagement();
+//        runCustomerConsole();
     }
 }
