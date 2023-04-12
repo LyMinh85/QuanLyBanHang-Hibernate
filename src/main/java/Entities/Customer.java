@@ -32,6 +32,12 @@ public class Customer {
         this.city = city;
     }
 
+    public Object[] toObject(){
+        return new Object[]{
+                getCustomerID(),getFullname(),getAddress(),getCity(), getPassword()
+        };
+    }
+
     @Override
     public String toString() {
         return "Customer{" +

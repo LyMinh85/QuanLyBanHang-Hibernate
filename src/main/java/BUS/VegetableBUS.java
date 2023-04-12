@@ -1,14 +1,19 @@
 package BUS;
 
+import DAO.CategoryDAO;
 import DAO.VegetableDAO;
+import Entities.Category;
 import Entities.Vegetable;
 
 import java.util.List;
 
 public class VegetableBUS {
-    private VegetableDAO vegetableDAO;
+    private final VegetableDAO vegetableDAO;
+    private final CategoryDAO categoryDAO;
+
     public VegetableBUS() {
         this.vegetableDAO = new VegetableDAO();
+        this.categoryDAO =  new CategoryDAO();
     }
 
     public List<Vegetable> getVegetables() {
@@ -33,5 +38,9 @@ public class VegetableBUS {
 
     public Vegetable getById(int vegetableID) {
         return vegetableDAO.getById(vegetableID);
+    }
+
+    public List<Category> getCategories() {
+        return categoryDAO.getCategories();
     }
 }

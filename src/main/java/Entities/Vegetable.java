@@ -45,6 +45,12 @@ public class Vegetable {
         this.price = price;
     }
 
+    public Object[] toObject(){
+        return new Object[]{
+                getVegetableID(),getVegetableName(),getPrice(),getAmount(), getUnit(),getCategory().getName(), getImage()
+        };
+    }
+
     @Override
     public String toString() {
         return "Vegetable{" +

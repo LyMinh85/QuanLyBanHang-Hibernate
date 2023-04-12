@@ -20,6 +20,7 @@ public class VegetableDAO {
             String hql = """
                     SELECT DISTINCT v FROM Vegetable v
                     INNER JOIN FETCH v.category c
+                    ORDER BY v.vegetableID
                     """;
             vegetables = session.createQuery(hql, Vegetable.class).getResultList();
         } catch (Exception e) {
