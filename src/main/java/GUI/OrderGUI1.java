@@ -7,16 +7,10 @@ package GUI;
 import BUS.CustomerBUS;
 import BUS.OrderBUS;
 import BUS.VegetableBUS;
-import DAO.HibernateUtil;
 import Entities.Customer;
 import Entities.Order;
 import Entities.OrderDetail;
 import Entities.Vegetable;
-import jakarta.persistence.PersistenceException;
-import jakarta.persistence.Query;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -27,7 +21,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 
 /**
@@ -701,12 +694,20 @@ public class OrderGUI1 extends javax.swing.JPanel {
             return;
         }
         int orderId = Integer.parseInt(tblOrderList.getValueAt(selectedRow, 0).toString());
-        if (orderBUS.deleteOrder(orderId)) {
-            JOptionPane.showMessageDialog(this, "Order deleted successfully");
-            showOrderListTable();
-        } else {
-            JOptionPane.showMessageDialog(this, "Failed to delete order!");
+        int rely = JOptionPane.showConfirmDialog(
+                this,
+                "Xác nhận xóa orderID: " + orderId,
+                "Xóa order",
+                JOptionPane.YES_NO_OPTION);
+        if (rely == JOptionPane.YES_OPTION) {
+            if (orderBUS.deleteOrder(orderId)) {
+                JOptionPane.showMessageDialog(this, "Order deleted successfully");
+                showOrderListTable();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to delete order!");
+            }
         }
+
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnAddOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddOrderActionPerformed

@@ -6,7 +6,6 @@ package GUI;
 import BUS.VegetableBUS;
 import Entities.Category;
 import Entities.Vegetable;
-import jakarta.persistence.criteria.CriteriaBuilder;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -26,7 +25,7 @@ public class VegetableGUI extends javax.swing.JPanel {
     public VegetableGUI() {
         initComponents();
         populateCategoryComboBox();
-        showTableData();
+        showVegetables();
     }
 
     /**
@@ -304,7 +303,7 @@ public class VegetableGUI extends javax.swing.JPanel {
                     "Error Measage!!!", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        showTableData(vegetableBUS.searchVegetableByName(name));
+        showVegetables(vegetableBUS.searchVegetableByName(name));
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void tblVegtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblVegtableMouseClicked
@@ -403,7 +402,7 @@ public class VegetableGUI extends javax.swing.JPanel {
         boolean success = vegetableBUS.updateVegetable(vegetable, category.getCategoryID());
         if (success) {
             JOptionPane.showMessageDialog(this, "Cập nhật thành công");
-            showTableData();
+            showVegetables();
         } else {
             JOptionPane.showMessageDialog(this, "Cập nhật thất bại");
         }
@@ -481,7 +480,7 @@ public class VegetableGUI extends javax.swing.JPanel {
         boolean success = vegetableBUS.addVegetable(vegetable, category.getCategoryID());
         if (success) {
             JOptionPane.showMessageDialog(this, "Thêm thành công");
-            showTableData();
+            showVegetables();
         } else {
             JOptionPane.showMessageDialog(this, "Thêm thất bại");
         }
@@ -497,21 +496,29 @@ public class VegetableGUI extends javax.swing.JPanel {
             return;
         }
         int vegetableID = (int) tblVegtable.getValueAt(selectedRow, 0);
-        boolean success = vegetableBUS.deleteVegetable(vegetableID);
-        if (success){
-            JOptionPane.showMessageDialog(this, "Đã xóa thành công ");
-            showTableData();
-            return;
+
+        int rely = JOptionPane.showConfirmDialog(
+                this,
+                "Xác nhận xóa vegetableID: " + vegetableID,
+                "Xóa vegetable",
+                JOptionPane.YES_NO_OPTION);
+        if (rely == JOptionPane.YES_OPTION) {
+            boolean success = vegetableBUS.deleteVegetable(vegetableID);
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Đã xóa thành công ");
+                showVegetables();
+                return;
+            }
+            JOptionPane.showMessageDialog(this, "Xóa thất bại");
         }
-        JOptionPane.showMessageDialog(this, "Xóa thất bại");
     }
 
-    private void showTableData() {
+    private void showVegetables() {
         List<Vegetable> vegetables = vegetableBUS.getVegetables();
-        showTableData(vegetables);
+        showVegetables(vegetables);
     }
 
-    private void showTableData(List<Vegetable> vegetables) {
+    private void showVegetables(List<Vegetable> vegetables) {
         DefaultTableModel model = (DefaultTableModel) tblVegtable.getModel();
         model.setRowCount(0);
 
@@ -538,7 +545,7 @@ public class VegetableGUI extends javax.swing.JPanel {
         txtSearch.setText(null);
         txtPrice.setText(null);
         txtUnit.setText(null);
-        showTableData();
+        showVegetables();
 
     }                                        
 
