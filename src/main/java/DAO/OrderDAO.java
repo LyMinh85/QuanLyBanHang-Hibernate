@@ -17,6 +17,9 @@ public class OrderDAO {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = """
                     SELECT o FROM Order o
+                    INNER JOIN FETCH o.orderDetails od
+                    INNER JOIN FETCH od.vegetable v
+                    INNER JOIN FETCH o.customer
                     WHERE o.date BETWEEN :startDate AND :endDate
                     ORDER BY o.date ASC
                     """;
@@ -36,6 +39,7 @@ public class OrderDAO {
                     INNER JOIN FETCH o.orderDetails od
                     INNER JOIN FETCH od.vegetable v
                     INNER JOIN FETCH o.customer
+                    ORDER BY o.orderID DESC
                     """;
             Query<Order> query = session.createQuery(hql, Order.class);
             orders = query.getResultList();
@@ -126,6 +130,24 @@ public class OrderDAO {
             e.printStackTrace();
         }
         return orders;
+    }
+
+    public Order getById(int orderID) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = """
+                    SELECT DISTINCT o FROM Order o
+                    INNER JOIN FETCH o.orderDetails od
+                    INNER JOIN FETCH od.vegetable v
+                    INNER JOIN FETCH o.customer
+                    WHERE o.orderID = :orderID
+                    """;
+            Query<Order> query = session.createQuery(hql, Order.class);
+            query.setParameter("orderID", orderID);
+            return query.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

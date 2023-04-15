@@ -30,4 +30,8 @@ public class CustomerBUS {
     public List<Customer> searchCustomerByName(String name) {
         return customerDAO.searchCustomerByName(name);
     }
+
+    public Customer getById(int customerID) {
+        return customerDAO.getById(customerID);
+    }
 }

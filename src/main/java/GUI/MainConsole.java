@@ -18,7 +18,7 @@ public class MainConsole {
     public static void runOrderManagement() {
         Scanner scanner = new Scanner(System.in);
         do {
-            System.out.println("1. Thống kê theo các ngày của tuần này");
+            System.out.println("1. Thống kê 5 sản phẩm bán chạy của năm");
             System.out.println("2. Hiển thị tất cả hóa đơn");
             System.out.println("3. Thêm hóa đơn");
             System.out.println("4. Xóa hóa đơn");
@@ -29,14 +29,27 @@ public class MainConsole {
             boolean isExit = switch (choose.toUpperCase()) {
                 case "1" -> {
                     // Thống kê doanh thu theo các ngày của tuần này
-                    LocalDate startDate = LocalDate.now().with(DayOfWeek.MONDAY).minusWeeks(1);
-                    LocalDate endDate = startDate.plusWeeks(1).minusDays(1);
-                    System.out.println(startDate);
-                    System.out.println(endDate);
-                    RevenueStatisticsBUS revenueStatisticsBus = new RevenueStatisticsBUS();
-                    List<RevenueDataPoint> revenueDate = revenueStatisticsBus.getDailyRevenue(startDate, endDate);
-                    for (RevenueDataPoint dataPoint : revenueDate) {
-                        System.out.println(dataPoint);
+//                    LocalDate startDate = LocalDate.now().with(DayOfWeek.MONDAY).minusWeeks(1);
+//                    LocalDate endDate = startDate.plusWeeks(1).minusDays(1);
+//                    System.out.println(startDate);
+//                    System.out.println(endDate);
+//                    RevenueStatisticsBUS revenueStatisticsBus = new RevenueStatisticsBUS();
+//                    List<RevenueDataPoint> revenueDate = revenueStatisticsBus.getDailyRevenue(startDate, endDate);
+//                    for (RevenueDataPoint dataPoint : revenueDate) {
+//                        System.out.println(dataPoint);
+//                    }
+
+                    System.out.print("Enter year: ");
+                    int year = Integer.parseInt(scanner.nextLine());
+                    System.out.printf("year: %d", year);
+                    ProductStatisticsBUS productStatisticsBUS = new ProductStatisticsBUS();
+                    List<VegetableSalesData> salesDataList = productStatisticsBUS.getTopSellingProductsOfMonth(3, year);
+                    System.out.printf("%20s|%20s|%20s|\n",
+                            "Top", "VegetableName", "Quantity");
+                    for (int i = 0; i < salesDataList.size(); i++) {
+                        System.out.printf("%20s|%20s|%20s|\n",
+                                i + 1, salesDataList.get(i).getName(),
+                                salesDataList.get(i).getQuantity());
                     }
                     yield false;
                 }

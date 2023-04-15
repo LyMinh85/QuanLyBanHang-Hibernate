@@ -1,7 +1,9 @@
 package DAO;
 
+import BUS.CustomerBUS;
 import Entities.Customer;
 import Entities.Order;
+import Entities.Vegetable;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -77,6 +79,15 @@ public class CustomerDAO {
             e.printStackTrace();
         }
         return customers;
+    }
+
+    public Customer getById(int cusomterID) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            return session.find(Customer.class, cusomterID);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static void main(String[] args) {

@@ -41,4 +41,8 @@ public class OrderBUS {
     public List<Order> getByCustomerName(String name) {
         return orderDAO.getByCustomerName(name);
     }
+
+    public Order getById(int orderID) {
+        return orderDAO.getById(orderID);
+    }
 }
