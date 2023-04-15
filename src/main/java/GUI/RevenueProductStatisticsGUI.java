@@ -7,7 +7,6 @@ package GUI;
 import BUS.RevenueDataPoint;
 import BUS.RevenueStatisticsBUS;
 import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.CategoryPlot;
@@ -17,7 +16,6 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
@@ -27,12 +25,13 @@ import java.util.List;
  * @author pc
  */
 public class RevenueProductStatisticsGUI extends javax.swing.JPanel {
-
+    private final RevenueStatisticsBUS revStatBus;
     /**
      * Creates new form RevenueProductStatisticsGUI
      */
     public RevenueProductStatisticsGUI() {
         initComponents();
+        revStatBus = new RevenueStatisticsBUS();
     }
 
     private void drawChart(List<RevenueDataPoint> dataPoints, LocalDate startDate, LocalDate endDate, String timeUnit) {
@@ -351,10 +350,9 @@ public class RevenueProductStatisticsGUI extends javax.swing.JPanel {
         int startYear = Integer.parseInt(txtStartYear.getText());
         int endYear = Integer.parseInt(txtEndYear.getText());
 
-        RevenueStatisticsBUS revenueStatisticsBUS = new RevenueStatisticsBUS();
         LocalDate startDate = LocalDate.of(startYear, 1, 1);
         LocalDate endDate = LocalDate.of(endYear, 12, 31);
-        List<RevenueDataPoint> dataPoints = revenueStatisticsBUS.getYearlyRevenue(startDate, endDate);
+        List<RevenueDataPoint> dataPoints = revStatBus.getYearlyRevenue(startDate, endDate);
 
         double totalRevenue = 0;
         for (RevenueDataPoint dataPoint : dataPoints) {
@@ -427,8 +425,7 @@ public class RevenueProductStatisticsGUI extends javax.swing.JPanel {
         LocalDate startDate = LocalDate.parse("01/" + start, formatter);
         LocalDate endDate = LocalDate.parse("01/" + end, formatter).with(TemporalAdjusters.lastDayOfMonth());
 
-        RevenueStatisticsBUS revenueStatisticsBUS = new RevenueStatisticsBUS();
-        List<RevenueDataPoint> dataPoints = revenueStatisticsBUS.getMonthlyRevenue(startDate, endDate);
+        List<RevenueDataPoint> dataPoints = revStatBus.getMonthlyRevenue(startDate, endDate);
 
         double totalRevenue = 0;
         for (RevenueDataPoint dataPoint : dataPoints) {
@@ -477,8 +474,7 @@ public class RevenueProductStatisticsGUI extends javax.swing.JPanel {
         LocalDate startDate = LocalDate.parse(start, formatter);
         LocalDate endDate = LocalDate.parse(end, formatter);
 
-        RevenueStatisticsBUS revenueStatisticsBUS = new RevenueStatisticsBUS();
-        List<RevenueDataPoint> dataPoints = revenueStatisticsBUS.getDailyRevenue(startDate, endDate);
+        List<RevenueDataPoint> dataPoints = revStatBus.getDailyRevenue(startDate, endDate);
 
         double totalRevenue = 0;
         for (RevenueDataPoint dataPoint : dataPoints) {

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RevenueStatisticsBUS {
-    private OrderDAO orderDao;
+    private final OrderDAO orderDao;
     public RevenueStatisticsBUS() {
         orderDao = new OrderDAO();
     }

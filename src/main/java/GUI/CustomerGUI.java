@@ -5,14 +5,11 @@
 package GUI;
 
 import BUS.CustomerBUS;
-import BUS.VegetableBUS;
-import Entities.Category;
 import Entities.Customer;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,16 +17,15 @@ import java.util.List;
  * @author ASUS
  */
 public class CustomerGUI extends javax.swing.JPanel {
-    private CustomerBUS customerBUS =new CustomerBUS();
+    private final CustomerBUS customerBUS = new CustomerBUS();
 
 
     /**
      * Creates new form CustomerGUI1
      */
     public CustomerGUI() {
-
         initComponents();
-        showTableData();
+        showCustomers();
     }
 
     /**
@@ -336,7 +332,7 @@ public class CustomerGUI extends javax.swing.JPanel {
         boolean success = customerBUS.addCustomer(customer);
         if (success){
             JOptionPane.showMessageDialog(this, "Thêm thành công ");
-            showTableData();
+            showCustomers();
         }
         else {
             JOptionPane.showMessageDialog(this, "Thêm thất bại !!! ",
@@ -387,7 +383,7 @@ public class CustomerGUI extends javax.swing.JPanel {
         boolean success = customerBUS.updateCustomer(customer);
         if (success){
             JOptionPane.showMessageDialog(this, "Sửa thành công ");
-            showTableData();
+            showCustomers();
         }
         else {
             JOptionPane.showMessageDialog(this, "Sửa thất bại !!! ",
@@ -404,13 +400,20 @@ public class CustomerGUI extends javax.swing.JPanel {
         }
         int customerID = (int) tblCustomer.getValueAt(selectRow, 0);
 
-        boolean success = customerBUS.deleteCustomer(customerID);
-        if (success){
-            JOptionPane.showMessageDialog(this, "Đã xóa thành công ");
-            showTableData();
-            return;
+        int rely = JOptionPane.showConfirmDialog(
+                this,
+                "Xác nhận xóa customerID: " + customerID,
+                "Xóa customer",
+                JOptionPane.YES_NO_OPTION);
+        if (rely == JOptionPane.YES_OPTION) {
+            boolean success = customerBUS.deleteCustomer(customerID);
+            if (success){
+                JOptionPane.showMessageDialog(this, "Đã xóa thành công ");
+                showCustomers();
+                return;
+            }
+            JOptionPane.showMessageDialog(this, "Xóa thất bại");
         }
-        JOptionPane.showMessageDialog(this, "Xóa thất bại");
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
@@ -419,15 +422,15 @@ public class CustomerGUI extends javax.swing.JPanel {
         txtPassword.setText(null);
         txtSearch.setText(null);
         txtCity.setText(null);
-        showTableData();
+        showCustomers();
     }//GEN-LAST:event_btnResetActionPerformed
 
-    private void showTableData(){
+    private void showCustomers(){
         List<Customer> customers = customerBUS.getCustomers();
-        showTableData(customers);
+        showCustomers(customers);
     }
 
-    private void showTableData(List<Customer> customers) {
+    private void showCustomers(List<Customer> customers) {
         DefaultTableModel model = (DefaultTableModel) tblCustomer.getModel();
         model.setRowCount(0);
 
@@ -451,7 +454,7 @@ public class CustomerGUI extends javax.swing.JPanel {
                     "Error Measage!!!", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        showTableData(customerBUS.searchCustomerByName(name));
+        showCustomers(customerBUS.searchCustomerByName(name));
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void tblCustomerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblCustomerMouseClicked
